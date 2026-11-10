@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#087f5b">
+  <title>GreenTrack | Passenger</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f3f7f5;
+      color: #18332b;
+      padding-bottom: 85px;
+    }
+
+    header {
+      background: #087f5b;
+      color: white;
+      padding: 22px 18px;
+      border-radius: 0 0 22px 22px;
+    }
+
+    header h1 {
+      font-size: 26px;
+    }
+
+    header p {
+      margin-top: 6px;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    main {
+      padding: 18px;
+    }
+
+    .search-box, .bus-card {
+      background: white;
+      padding: 18px;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 3px 14px rgba(0,0,0,0.05);
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin: 12px 0 6px;
+      color: #557068;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #dce8e2;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    button {
+      background: #087f5b;
+      color: white;
+      border: none;
+      padding: 13px;
+      width: 100%;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      margin-top: 14px;
+      cursor: pointer;
+    }
+
+    button:active {
+      opacity: 0.8;
+    }
+
+    .map {
+      height: 220px;
+      background: #e1eee7;
+      border: 1px solid #c9dfd2;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      margin-bottom: 18px;
+      color: #416b58;
+    }
+
+    .bus-card h3 {
+      margin-bottom: 10px;
+    }
+
+    .bus-info {
+      font-size: 14px;
+      line-height: 1.9;
+      color: #557068;
+    }
+
+    .status {
+      display: inline-block;
+      background: #e2f5e9;
+      color: #087f5b;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 14px 5px;
+      box-shadow: 0 -3px 12px rgba(0,0,0,0.08);
+    }
+
+    nav a {
+      color: #557068;
+      text-decoration: none;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .active {
+      color: #087f5b;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🚌 GreenTrack</h1>
+    <p>Know Your Bus. Plan Your Journey.</p>
+  </header>
+
+  <main>
+
+    <section class="search-box">
+      <h2>Where are you going?</h2>
+
+      <label for="pickup">Your location</label>
+      <input id="pickup" type="text"
+        placeholder="Enter your current location">
+
+      <label for="destination">Destination</label>
+      <input id="destination" type="text"
+        placeholder="Where do you want to go?">
+
+      <button onclick="findBuses()">
+        Find Buses
+      </button>
+    </section>
+
+    <section>
+      <h2>Live Bus Map</h2>
+
+      <div class="map">
+        <div>
+          <h2>📍 Map coming soon</h2>
+          <p>Live bus locations will appear here.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Nearby Buses</h2>
+
+      <div class="bus-card">
+        <h3>Bus GT-001</h3>
+
+        <div class="bus-info">
+          Route: Turbat Main Route<br>
+          Destination: Main Market<br>
+          Estimated arrival: Awaiting GPS
+        </div>
+
+        <span class="status">
+          Waiting for live connection
+        </span>
+
+        <button onclick="trackBus()">
+          Track This Bus
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <nav>
+    <a class="active" href="#">⌂<br>Explore</a>
+    <a href="#journeys">◷<br>My Journeys</a>
+    <a href="#alerts">♧<br>Alerts</a>
+    <a href="#account">☻<br>Account</a>
+  </nav>
+
+  <script>
+    function findBuses() {
+      const destination =
+        document.getElementById("destination").value.trim();
+
+      if (!destination) {
+        alert("Please enter your destination.");
+        return;
+      }
+
+      alert("Searching for buses to " + destination +
+        ". Live bus search will be connected soon.");
+    }
+
+    function trackBus() {
+      alert("Live GPS tracking will be added in the next development step.");
+    }
+  </script>
+
+</body>
+        </html>
+      
