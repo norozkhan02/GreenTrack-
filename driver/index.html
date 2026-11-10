@@ -234,6 +234,153 @@
     }
   </script>
 
+  
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: #f0f5f2;
+            color: #18332b;
+            padding-bottom: 30px;
+        }
+        header {
+            background: #102b24;
+            color: white;
+            padding: 24px 18px;
+            border-radius: 0 0 22px 22px;
+        }
+        header h1 {
+            font-size: 25px;
+        }
+        header p {
+            margin-top: 7px;
+            color: #c5ebdf;
+        }
+        main {
+            padding: 13px;
+        }
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .info {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #102b24;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+        button:active {
+            opacity: 0.9;
+        }
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+        nav a {
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            text-align: center;
+        }
+        nav a.active {
+            color: #102b24;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>GreenTrack Driver</h1>
+        <p>Waiting for live connection</p>
+    </header>
+
+    <main>
+        <div class="card">
+            <h2>Current Location</h2>
+            <div class="info" id="location-status">Acquiring GPS fix...</div>
+        </div>
+
+        <div class="card">
+            <h2>Track Bus</h2>
+            <button onclick="trackBus()">Track This Bus</button>
+        </div>
+    </main>
+
+    <nav>
+        <a href="index.html" class="active">Explore</a>
+        <a href="journeys.html">Journeys</a>
+        <a href="alerts.html">Alerts</a>
+        <a href="account.html">Account</a>
+    </nav>
+
+    <!-- Supabase CDN Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase using your project URL and publishable key
+        const SUPABASE_URL = 'YOUR_PROJECT_URL_HERE';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        function trackBus() {
+            if (navigator.geolocation) {
+                document.getElementById('location-status').innerText = 'Getting live location...';
+                navigator.geolocation.watchPosition(
+                    async (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        
+                        document.getElementById('location-status').innerText = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+                        
+                        // Example: Update location to Supabase table (adjust table/columns to your schema)
+                        /*
+                        const { error } = await supabase
+                            .from('buses')
+                            .update({ latitude: lat, longitude: lng })
+                            .eq('id', 1); // update appropriate bus row
+                        if (error) console.error('Error updating location:', error);
+                        */
+                    },
+                    (error) => {
+                        document.getElementById('location-status').innerText = 'Error: ' + error.message;
+                    },
+                    { enableHighAccuracy: true }
+                );
+            } else {
+                document.getElementById('location-status').innerText = 'Geolocation is not supported by this browser.';
+            }
+        }
+    </script>
+  
+  
+
 </body>
         </html>
   
