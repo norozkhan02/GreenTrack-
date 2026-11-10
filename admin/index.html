@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102b24">
+  <title>GreenTrack | Driver</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f0f5f2;
+      color: #18332b;
+      padding-bottom: 30px;
+    }
+
+    header {
+      background: #102b24;
+      color: white;
+      padding: 24px 18px;
+      border-radius: 0 0 22px 22px;
+    }
+
+    header h1 {
+      font-size: 25px;
+    }
+
+    header p {
+      margin-top: 7px;
+      color: #c5d9cf;
+      font-size: 13px;
+    }
+
+    main {
+      padding: 18px;
+    }
+
+    .card {
+      background: white;
+      padding: 18px;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .bus-id {
+      color: #087f5b;
+      font-size: 25px;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+
+    .info {
+      color: #557068;
+      font-size: 14px;
+      line-height: 1.9;
+      overflow-wrap: anywhere;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      padding: 15px;
+      border-radius: 11px;
+      font-size: 15px;
+      font-weight: bold;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    #startBtn {
+      background: #087f5b;
+      color: white;
+    }
+
+    #stopBtn {
+      background: #e9eeee;
+      color: #18332b;
+    }
+
+    .status {
+      display: inline-block;
+      background: #fff3d6;
+      color: #8b6500;
+      padding: 7px 11px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .live {
+      background: #dcf5e6;
+      color: #087f5b;
+    }
+
+    .location {
+      background: #f3f7f5;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.9;
+      overflow-wrap: anywhere;
+    }
+
+    .request {
+      background: #f3f7f5;
+      padding: 13px;
+      border-radius: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #667b72;
+      line-height: 1.6;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🚌 GreenTrack Driver</h1>
+    <p>Safe driving. Smarter journeys.</p>
+  </header>
+
+  <main>
+
+    <section class="card">
+      <h2>My Assigned Bus</h2>
+      <div class="bus-id">GT-001</div>
+      <div class="info">
+        Route: Turbat Main Route<br>
+        Driver: Demo Driver<br>
+        Status: Prototype
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>GPS Tracking</h2>
+
+      <span id="status" class="status">
+        Trip not started
+      </span>
+
+      <button id="startBtn" onclick="startTracking()">
+        ▶ Start Trip & GPS
+      </button>
+
+      <button id="stopBtn" onclick="stopTracking()">
+        ■ End Trip
+      </button>
+
+      <div class="location">
+        <strong>GPS Coordinates</strong>
+        <div id="latitude">Latitude: Waiting...</div>
+        <div id="longitude">Longitude: Waiting...</div>
+        <div id="accuracy">Accuracy: --</div>
+        <div id="updated">Last update: --</div>
+      </div>
+
+      <p class="note">
+        Keep this page open while testing. GPS permission and
+        a secure connection (HTTPS or localhost) are required.
+        This prototype displays GPS locally; server sharing
+        will be implemented in a later step.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Passenger Requests</h2>
+
+      <div class="request">
+        📍 Main Market<br>
+        Waiting passengers: 0
+      </div>
+
+      <div class="request">
+        📍 College Stop<br>
+        Drop-off requests: 0
+      </div>
+
+      <p class="note">
+        Sample request display. Real passenger requests
+        will be connected to the database later.
+      </p>
+    </section>
+
+  </main>
+
+  <script>
+    let watchId = null;
+
+    function startTracking() {
+      if (!navigator.geolocation) {
+        alert("GPS is not supported by this browser.");
+        return;
+      }
+
+      if (watchId !== null) return;
+
+      document.getElementById("status").textContent =
+        "Requesting GPS permission...";
+
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          updateLocation(position);
+
+          watchId = navigator.geolocation.watchPosition(
+            updateLocation,
+            showError,
+            {
+              enableHighAccuracy: true,
+              maximumAge: 3000,
+              timeout: 15000
+            }
+          );
+
+          document.getElementById("status").textContent =
+            "GPS tracking active";
+
+          document.getElementById("status").className =
+            "status live";
+        },
+        showError,
+        {
+          enableHighAccuracy: true,
+          timeout: 15000
+        }
+      );
+    }
+
+    function updateLocation(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const accuracy = position.coords.accuracy;
+
+      document.getElementById("latitude").textContent =
+        "Latitude: " + lat.toFixed(6);
+
+      document.getElementById("longitude").textContent =
+        "Longitude: " + lon.toFixed(6);
+
+      document.getElementById("accuracy").textContent =
+        "Accuracy: approximately " + Math.round(accuracy) + " metres";
+
+      document.getElementById("updated").textContent =
+        "Last update: " + new Date().toLocaleTimeString();
+    }
+
+    function showError(error) {
+      const messages = {
+        1: "Location permission denied.",
+        2: "GPS position unavailable.",
+        3: "GPS request timed out."
+      };
+
+      document.getElementById("status").textContent =
+        messages[error.code] || "GPS error";
+
+      document.getElementById("status").className = "status";
+    }
+
+    function stopTracking() {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+
+      document.getElementById("status").textContent =
+        "Trip ended";
+
+      document.getElementById("status").className = "status";
+    }
+  </script>
+
+</body>
+  </html>
+  
