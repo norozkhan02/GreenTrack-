@@ -1,1 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenTrack | Driver Portal</title>
+    <!-- Load Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
+        body { background: #f4f6f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
+        .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; }
+        h1 { font-size: 24px; color: #1a1a1a; margin-bottom: 8px; }
+        p { color: #666; font-size: 14px; margin-bottom: 24px; }
+        .status-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; margin-bottom: 20px; background: #e2e8f0; color: #475569; }
+        .status-badge.active { background: #dcfce7; color: #166534; }
+        .status-badge.error { background: #fee2e2; color: #991b1b; }
+        button { background: #087f5b; color: white; border: none; padding: 14px 24px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; }
+        button:hover { background: #065f46; }
+        button.active { background: #dc2626; }
+        button.active:hover { background: #b91c1c; }
+        .metrics { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; }
+        .metric-box { background: #f8fafc; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .metric-label { font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; }
+        .metric-value { font-size: 15px; color: #0f172a; font-weight: 600; margin-top: 2px; }
+    </style>
+</head>
+<body>
 
+    <div class="card">
+        <h1>Driver Portal</h1>
+        <p>Broadcast your real-time vehicle location</p>
+        
+        <div>
+            <span id="statusBadge" class="status-badge">Status: Offline</span>
+        </div>
+
+        <button id="toggleBtn" onclick="toggleTracking()">Start Broadcasting</button>
+
+        <div class="metrics">
+            <div class="metric-box">
+                <div class="metric-label">Latitude</div>
+                <div id="latVal" class="metric-value">--</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-label">Longitude</div>
+                <div id="lngVal" class="metric-value">--</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // TODO: Replace these with your actual Supabase project credentials
+        const SUPABASE_URL = "sb_publishable_QwNjqYNgr8yTWuZvT9bYyw_Y-aWvj_J";
+        const SUPABASE_ANON_KEY = "sb_secret_Llkj_gHV5SGh2EcisSYtag_5qBMXcsc";
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let watchId = null;
+        const busId = 1; // Change or dynamically link this per driver/bus assignment
+
+        function toggleTracking() {
+            const btn = document.getElementById('toggleBtn');
+            const badge = document.getElementById('statusBadge');
+
+            if (watchId === null) {
+                if (!navigator.geolocation) {
+                    alert("Geolocation is not supported by your browser.");
+                    return;
+                }
+
+                badge.className = "status-badge";
+                badge.innerText = "Status: Acquiring GPS...";
+                
+                watchId = navigator.geolocation.watchPosition(updatePosition, handleGeoError, {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 10000
+                });
+
+                btn.innerText = "Stop Broadcasting";
+                btn.classList.add('active');
+            } else {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+
+                badge.className = "status-badge";
+                badge.innerText = "Status: Offline";
+                btn.innerText = "Start Broadcasting";
+                btn.classList.remove('active');
+
+                document.getElementById('latVal').innerText = "--";
+                document.getElementById('lngVal').innerText = "--";
+            }
+        }
+
+        async function updatePosition(position) {
+            const badge = document.getElementById('statusBadge');
+            badge.className = "status-badge active";
+            badge.innerText = "Status: Broadcasting Live";
+
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const speed = position.coords.speed ? position.coords.speed * 3.6 : 0; // Convert m/s to km/h if available
+            const heading = position.coords.heading || 0;
+
+            document.getElementById('latVal').innerText = lat.toFixed(5);
+            document.getElementById('lngVal').innerText = lng.toFixed(5);
+
+            // Upsert location data into Supabase
+            const { error } = await supabase
+                .from('bus_locations')
+                .upsert({
+                    bus_id: busId,
+                    latitude: lat,
+                    longitude: lng,
+                    speed: speed,
+                    heading: heading,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'bus_id' });
+
+            if (error) {
+                console.error("Supabase sync error:", error.message);
+                badge.className = "status-badge error";
+                badge.innerText = "Status: Sync Error";
+            }
+        }
+
+        function handleGeoError(error) {
+            console.error(`Geolocation error (${error.code}): ${error.message}`);
+            const badge = document.getElementById('statusBadge');
+            badge.className = "status-badge error";
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    badge.innerText = "GPS Error: Permission Denied";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    badge.innerText = "GPS Error: Position Unavailable";
+                    break;
+                case error.TIMEOUT:
+                    badge.innerText = "GPS Error: Request Timeout";
+                    break;
+                default:
+                    badge.innerText = "GPS Error: Unknown Error";
+                    break;
+            }
+        }
+    </script>
+</body>
+              </html>
+              
