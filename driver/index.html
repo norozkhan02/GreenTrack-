@@ -50,14 +50,13 @@
     </div>
 
     <script>
-        // TODO: Replace these with your actual Supabase project credentials
         const SUPABASE_URL = "https://uywbfrkefjbukymgf.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_QWnJqYNgR8yTwuZvT9bYwY-aWvJ_J";
         
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let watchId = null;
-        const busId = 1; // Change or dynamically link this per driver/bus assignment
+        const busId = 1;
 
         function toggleTracking() {
             const btn = document.getElementById('toggleBtn');
@@ -101,23 +100,22 @@
 
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-            const speed = position.coords.speed ? position.coords.speed * 3.6 : 0; // Convert m/s to km/h if available
+            const speed = position.coords.speed ? position.coords.speed * 3.6 : 0;
             const heading = position.coords.heading || 0;
 
             document.getElementById('latVal').innerText = lat.toFixed(5);
             document.getElementById('lngVal').innerText = lng.toFixed(5);
 
-            // Upsert location data into Supabase
             const { error } = await supabase
                 .from('bus_locations')
-                .upsert({
+                .upsert([{
                     bus_id: busId,
                     latitude: lat,
                     longitude: lng,
                     speed: speed,
                     heading: heading,
                     updated_at: new Date().toISOString()
-                }, { onConflict: 'bus_id' });
+                }], { onConflict: 'bus_id' });
 
             if (error) {
                 console.error("Supabase sync error:", error.message);
@@ -148,5 +146,5 @@
         }
     </script>
 </body>
-              </html>
-              
+                    </html>
+                
