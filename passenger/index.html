@@ -257,7 +257,30 @@
       alert("Live GPS tracking will be added in the next development step.");
     }
   </script>
-
+<script>
+  async function updateBusLocation() {
+    try {
+      const { data, error } = await supabase
+        .from('bus_locations') // Replace with your exact table name if different
+        .select('latitude, longitude')
+        .eq('bus_id', 'GT-001') // Matches your bus ID
+        .single();
+      
+      if (data) {
+        // Assuming you have elements with these IDs to show the location
+        document.getElementById('lat-val').innerText = data.latitude;
+        document.getElementById('lng-val').innerText = data.longitude;
+      }
+    } catch (err) {
+      console.error("Error fetching location", err);
+    }
+  }
+  // Refresh location every 5 seconds
+  setInterval(updateBusLocation, 5000);
+  updateBusLocation();
+</script>
+  
+  
 </body>
         </html>
       
