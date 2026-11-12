@@ -1,554 +1,237 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#102b24">
-  <title>GreenTrack | Driver</title>
-
-  <style>
-
-    .nav-bar {
-  background: #ffffff;
-  padding: 12px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-}
-.nav-bar a {
-  text-decoration: none;
-  color: #16a34a;
-  font-weight: 600;
-  font-size: 14px;
-}
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      background: #f0f5f2;
-      color: #18332b;
-      padding-bottom: 30px;
-    }
-
-    header {
-      background: #102b24;
-      color: white;
-      padding: 24px 18px;
-      border-radius: 0 0 22px 22px;
-    }
-
-    header h1 {
-      font-size: 25px;
-    }
-
-    header p {
-      margin-top: 7px;
-      color: #c5d9cf;
-      font-size: 13px;
-    }
-
-    main {
-      padding: 18px;
-    }
-
-    .card {
-      background: white;
-      padding: 18px;
-      border-radius: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
-    }
-
-    h2 {
-      font-size: 18px;
-      margin-bottom: 14px;
-    }
-
-    .bus-id {
-      color: #087f5b;
-      font-size: 25px;
-      font-weight: bold;
-      margin: 8px 0;
-    }
-
-    .info {
-      color: #557068;
-      font-size: 14px;
-      line-height: 1.9;
-      overflow-wrap: anywhere;
-    }
-
-    button {
-      width: 100%;
-      border: none;
-      padding: 15px;
-      border-radius: 11px;
-      font-size: 15px;
-      font-weight: bold;
-      margin-top: 12px;
-      cursor: pointer;
-    }
-
-    #startBtn {
-      background: #087f5b;
-      color: white;
-    }
-
-    #stopBtn {
-      background: #e9eeee;
-      color: #18332b;
-    }
-
-    .status {
-      display: inline-block;
-      background: #fff3d6;
-      color: #8b6500;
-      padding: 7px 11px;
-      border-radius: 20px;
-      font-size: 12px;
-      margin-top: 10px;
-    }
-
-    .live {
-      background: #dcf5e6;
-      color: #087f5b;
-    }
-
-    .location {
-      background: #f3f7f5;
-      padding: 12px;
-      border-radius: 10px;
-      margin-top: 10px;
-      font-size: 13px;
-      line-height: 1.9;
-      overflow-wrap: anywhere;
-    }
-
-    .request {
-      background: #f3f7f5;
-      padding: 13px;
-      border-radius: 10px;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    .note {
-      font-size: 12px;
-      color: #667b72;
-      line-height: 1.6;
-      margin-top: 12px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenTrack - Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f5f2; color: #18332b; margin: 0; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { background: #102b24; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #1d4d41; }
+        .status { font-weight: bold; }
+        .status-online { color: green; }
+        .status-offline { color: red; }
+    </style>
 </head>
-
 <body>
 
-  <div class="nav-bar">
-  <a href="../">Home</a>
-  <a href="../passenger/">Passenger</a>
-  <a href="../driver/">Driver</a>
-  <a href="../admin/">Admin</a>
-  </div>
-  
+    <!-- Login Section -->
+    <div id="login-section" class="card">
+        <h2>Admin Login</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="admin-email">Email</label>
+                <input type="email" id="admin-email" required>
+            </div>
+            <div class="form-group">
+                <label for="admin-password">Password</label>
+                <input type="password" id="admin-password" required>
+            </div>
+            <button type="submit">Log In</button>
+        </form>
+    </div>
 
-  <header>
-    <h1>🚌 GreenTrack Driver</h1>
-    <p>Safe driving. Smarter journeys.</p>
-  </header>
+    <!-- Admin Panel Section -->
+    <div id="admin-panel" class="card" style="display: none;">
+        <h2>Admin Panel</h2>
+        <p>Status: <span id="auth-status" class="status status-offline">Offline</span></p>
+        <button onclick="handleLogout()">Log Out</button>
 
-  <main>
+        <hr>
 
-    <section class="card">
-      <h2>My Assigned Bus</h2>
-      <div class="bus-id">GT-001</div>
-      <div class="info">
-        Route: Turbat Main Route<br>
-        Driver: Demo Driver<br>
-        Status: Prototype
-      </div>
-    </section>
+        <h3>Manage System Data</h3>
+        <button id="adminActionBtn" onclick="executeAdminAction('reset-system-data')">Purge System Data</button>
 
-    <section class="card">
-      <h2>GPS Tracking</h2>
+        <h3>Live Bus Tracking</h3>
+        <div id="bus-id">Bus ID: GT-001</div>
+        <div class="form-group">
+            <label>Latitude</label>
+            <input type="text" id="latitude" readonly>
+        </div>
+        <div class="form-group">
+            <label>Longitude</label>
+            <input type="text" id="longitude" readonly>
+        </div>
+        <button id="broadcast-override-btn" onclick="executeAdminAction('broadcast-override-btn')">Force Location Broadcast</button>
+    </div>
 
-      <span id="status" class="status">
-        Trip not started
-      </span>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"></script>
+    <script>
+        const SUPABASE_URL = 'https://uywbfrkefjbukymgfpvb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_QwNjqYNgr8yTWuZVt9bYyw_Y-aWvJ_J';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      <button id="startBtn" onclick="startTracking()">
-        ▶ Start Trip & GPS
-      </button>
+        const appState = {
+            session: null,
+            userRole: null
+        };
 
-      <button id="stopBtn" onclick="stopTracking()">
-        ■ End Trip
-      </button>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initializeAuth();
+        });
 
-      <div class="location">
-        <strong>GPS Coordinates</strong>
-        <div id="latitude">Latitude: Waiting...</div>
-        <div id="longitude">Longitude: Waiting...</div>
-        <div id="accuracy">Accuracy: --</div>
-        <div id="updated">Last update: --</div>
-      </div>
+        async function initializeAuth() {
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                if (error) throw error;
 
-      <p class="note">
-        Keep this page open while testing. GPS permission and
-        a secure connection (HTTPS or localhost) are required.
-        This prototype displays GPS locally; server sharing
-        will be implemented in a later step.
-      </p>
-    </section>
-
-    <section class="card">
-      <h2>Passenger Requests</h2>
-
-      <div class="request">
-        📍 Main Market<br>
-        Waiting passengers: 0
-      </div>
-
-      <div class="request">
-        📍 College Stop<br>
-        Drop-off requests: 
-      </div>
-
-      <p class="note">
-        Sample request display. Real passenger requests
-        will be connected to the database later.
-      </p>
-    </section>
-
-  </main>
-
-  <script>
-    let watchId = null;
-
-    function startTracking() {
-      if (!navigator.geolocation) {
-        alert("GPS is not supported by this browser.");
-        return;
-      }
-
-      if (watchId !== null) return;
-
-      document.getElementById("status").textContent =
-        "Requesting GPS permission...";
-
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          updateLocation(position);
-
-          watchId = navigator.geolocation.watchPosition(
-            updateLocation,
-            showError,
-            {
-              enableHighAccuracy: true,
-              maximumAge: 3000,
-              timeout: 15000
+                appState.session = session;
+                if (session) {
+                    await fetchUserRole(session.user.id);
+                    updateAdminUI(true);
+                } else {
+                    updateAdminUI(false);
+                }
+            } catch (err) {
+                console.error("Auth initialization failed:", err.message);
+                updateAdminUI(false);
             }
-          );
 
-          document.getElementById("status").textContent =
-            "GPS tracking active";
-
-          document.getElementById("status").className =
-            "status live";
-        },
-        showError,
-        {
-          enableHighAccuracy: true,
-          timeout: 15000
+            supabase.auth.onAuthStateChange(async (_event, session) => {
+                appState.session = session;
+                if (session) {
+                    await fetchUserRole(session.user.id);
+                    updateAdminUI(true);
+                } else {
+                    appState.userRole = null;
+                    updateAdminUI(false);
+                }
+            });
         }
-      );
-    }
 
-    function updateLocation(position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      const accuracy = position.coords.accuracy;
+        async function fetchUserRole(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', userId)
+                    .single();
 
-      document.getElementById("latitude").textContent =
-        "Latitude: " + lat.toFixed(6);
+                if (error) throw error;
+                appState.userRole = data?.role;
+            } catch (err) {
+                console.error("Error fetching user role:", err.message);
+                appState.userRole = 'user';
+            }
+        }
 
-      document.getElementById("longitude").textContent =
-        "Longitude: " + lon.toFixed(6);
+        function updateAdminUI(isLoggedIn) {
+            const loginSection = document.getElementById('login-section');
+            const adminPanel = document.getElementById('admin-panel');
+            const authStatus = document.getElementById('auth-status');
 
-      document.getElementById("accuracy").textContent =
-        "Accuracy: approximately " + Math.round(accuracy) + " metres";
+            if (authStatus) {
+                authStatus.textContent = isLoggedIn ? "Online (Admin)" : "Offline";
+                authStatus.className = isLoggedIn ? "status status-online" : "status status-offline";
+            }
 
-      document.getElementById("updated").textContent =
-        "Last update: " + new Date().toLocaleTimeString();
-    }
+            if (loginSection && adminPanel) {
+                if (isLoggedIn && appState.userRole === 'admin') {
+                    loginSection.style.display = 'none';
+                    adminPanel.style.display = 'block';
+                } else {
+                    loginSection.style.display = 'block';
+                    adminPanel.style.display = 'none';
+                }
+            }
+        }
 
-    function showError(error) {
-      const messages = {
-        1: "Location permission denied.",
-        2: "GPS position unavailable.",
-        3: "GPS request timed out."
-      };
-
-      document.getElementById("status").textContent =
-        messages[error.code] || "GPS error";
-
-      document.getElementById("status").className = "status";
-    }
-
-    function stopTracking() {
-      if (watchId !== null) {
-        navigator.geolocation.clearWatch(watchId);
-        watchId = null;
-      }
-
-      document.getElementById("status").textContent =
-        "Trip ended";
-
-      document.getElementById("status").className = "status";
-    }
-
-    // 1. Check current session on page load
-async function checkAuth() {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    
-    // If on the Admin tab/view, verify the user is logged in
-    const currentTab = document.querySelector('.admin-section'); // Adjust selector based on your HTML structure
-    if (!session) {
-        console.warn("Unauthorized access attempt. Please log in.");
-        return false;
-    }
-    return true;
-}
-
-// 2. Protect Admin Button Actions
-const adminButton = document.getElementById('adminActionBtn'); // Replace with your actual admin button ID
-if (adminButton) {
-    adminButton.addEventListener('click', async (e) => {
-        const isAuthenticated = await checkAuth();
-        
-        if (!isAuthenticated) {
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            alert("Access Denied: You must be logged in as an administrator to use this feature.");
-            // Optional: Redirect to a login modal or page
-            return;
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+
+            try {
+                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                alert("Login successful!");
+            } catch (err) {
+                alert("Login failed: " + err.message);
+            }
+        });
+
+        async function handleLogout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                window.location.reload();
+            } catch (err) {
+                console.error("Logout error:", err.message);
+            }
         }
-        
-        // Proceed with admin action if authenticated
-        console.log("Admin action authorized.");
-    });
-    }
 
-
-
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-
-// Initialize Supabase Client
-const SUPABASE_URL = 'https://uywbfrkefjbukymgfpvb.supabase.co';
-  
-  co';
-const SUPABASE_ANON_KEY = 'sb_publishable_QwNjqYNgr8yTWuZvT9bYyw_Y-aWvj_J';
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// State Management
-const appState = {
-    session: null,
-    userRole: null
-};
-
-// Initialize App Security
-document.addEventListener('DOMContentLoaded', async () => {
-    await initializeAuth();
-    setupAdminProtection();
-});
-
-async function initializeAuth() {
-    try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        
-        appState.session = session;
-        if (session) {
-            await fetchUserRole(session.user.id);
-            updateAdminUI(true);
-        } else {
-            updateAdminUI(false);
+        async function verifyAuthorization() {
+            if (!appState.session) return false;
+            if (appState.userRole !== 'admin') {
+                console.warn("Permission denied: User is not an admin.");
+                return false;
+            }
+            return true;
         }
-    } catch (err) {
-        console.error("Auth initialization failed:", err.message);
-        updateAdminUI(false);
-    }
 
-    // Listen for auth changes
-    supabase.auth.onAuthStateChange(async (_event, session) => {
-        appState.session = session;
-        if (session) {
-            await fetchUserRole(session.user.id);
-            updateAdminUI(true);
-        } else {
-            appState.userRole = null;
-            updateAdminUI(false);
-        }
-    });
-}
-
-async function fetchUserRole(userId) {
-    try {
-        const { data, error } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', userId)
-            .single();
-
-        if (error) throw error;
-        appState.userRole = data?.role;
-    } catch (err) {
-        console.error("Error fetching user role:", err.message);
-        appState.userRole = 'user';
-    }
-}
-
-function updateAdminUI(isLoggedIn) {
-    const loginSection = document.getElementById('login-section');
-    const adminPanel = document.getElementById('admin-panel');
-    const authStatusBadge = document.getElementById('auth-status-badge');
-
-    if (authStatusBadge) {
-        authStatusBadge.textContent = isLoggedIn ? "Status: Online (Admin)" : "Status: Offline";
-        authStatusBadge.className = isLoggedIn ? "status badge-online" : "status badge-offline";
-    }
-
-    if (loginSection && adminPanel) {
-        if (isLoggedIn) {
-            loginSection.style.display = 'none';
-            adminPanel.style.display = 'block';
-        } else {
-            loginSection.style.display = 'block';
-            adminPanel.style.display = 'none';
-        }
-    }
-}
-
-// Global Auth Handlers
-window.handleAdminLogin = async function(event) {
-    event.preventDefault();
-    const email = document.getElementById('admin-email').value;
-    const password = document.getElementById('admin-password').value;
-
-    try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        
-        alert("Login successful!");
-    } catch (err) {
-        alert("Login failed: " + err.message);
-    }
-};
-
-window.handleAdminLogout = async function() {
-    try {
-        const { error } = await supabase.auth.signOut();
-        if (error) throw error;
-        window.location.reload();
-    } catch (err) {
-        console.error("Logout error:", err.message);
-    }
-};
-
-// Button Protection Logic
-function setupAdminProtection() {
-    const adminButtons = document.querySelectorAll('.admin-action-btn');
-    
-    adminButtons.forEach(button => {
-        button.addEventListener('click', async (e) => {
-            const isAuthorized = verifyAuthorization();
-            
+        async function executeAdminAction(actionId) {
+            const isAuthorized = await verifyAuthorization();
             if (!isAuthorized) {
-                e.stopImmediatePropagation();
-                e.preventDefault();
-                triggerLoginPrompt();
+                alert("Access Denied: You must be logged in as an administrator to use this feature.");
                 return;
             }
 
-            executeAdminAction(button.id);
-        });
-    });
-}
-
-function verifyAuthorization() {
-    if (!appState.session) return false;
-    if (appState.userRole !== 'admin') {
-        console.warn("Permission denied: User is not an admin.");
-        return false;
-    }
-    return true;
-}
-
-function triggerLoginPrompt() {
-    const loginSection = document.getElementById('login-section');
-    if (loginSection) {
-        loginSection.scrollIntoView({ behavior: 'smooth' });
-        const emailInput = document.getElementById('admin-email');
-        if (emailInput) emailInput.focus();
-    }
-    alert("Access Denied: Please log in with an authorized Administrator account to perform this action.");
-}
-
-async function executeAdminAction(actionId) {
-    console.log(`Executing secure admin action: ${actionId}`);
-    try {
-        switch(actionId) {
-            case 'broadcast-override-btn':
-                await forceBroadcastCoordinates();
-                break;
-            case 'reset-system-btn':
-                await resetSystemData();
-                break;
-            default:
-                alert("Action triggered successfully.");
+            console.log(`Executing secure admin action: ${actionId}`);
+            try {
+                switch(actionId) {
+                    case 'broadcast-override-btn':
+                        await forceBroadcastCoordinates();
+                        break;
+                    case 'reset-system-data':
+                        await resetSystemData();
+                        break;
+                    default:
+                        alert("Action triggered successfully.");
+                }
+            } catch (err) {
+                console.error("Action execution failed:", err.message);
+                alert("Failed to execute admin action.");
+            }
         }
-    } catch (err) {
-        console.error("Action execution failed:", err.message);
-        alert("Failed to execute admin action.");
-    }
-}
 
-// Mock Admin Actions
-async function forceBroadcastCoordinates() {
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const { latitude, longitude } = position.coords;
+        async function forceBroadcastCoordinates() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    
+                    document.getElementById('latitude').value = latitude;
+                    document.getElementById('longitude').value = longitude;
+
+                    const { error } = await supabase
+                        .from('bus_locations')
+                        .upsert({ bus_id: 'GT-001', latitude, longitude, updated_at: new Date() });
+
+                    if (error) throw error;
+                    alert("Coordinates forcefully broadcasted to database.");
+                });
+            } else {
+                alert("Geolocation not supported.");
+            }
+        }
+
+        async function resetSystemData() {
+            const confirmReset = confirm("CRITICAL WARNING: This will reset all active routes. Proceed?");
+            if (!confirmReset) return;
+
             const { error } = await supabase
                 .from('bus_locations')
-                .upsert({ bus_id: 'GT-001', latitude, longitude, updated_at: new Date() });
+                .delete()
+                .neq('id', 0);
 
             if (error) throw error;
-            alert("Coordinates forcefully broadcasted to database.");
-        });
-    } else {
-        alert("Geolocation not supported.");
-    }
-}
-
-async function resetSystemData() {
-    const confirmReset = confirm("CRITICAL WARNING: This will reset all active routes. Proceed?");
-    if (!confirmReset) return;
-
-    const { error } = await supabase
-        .from('bus_locations')
-        .delete()
-        .neq('id', 0);
-
-    if (error) throw error;
-    alert("System data purged.");
-  }
-  </script>
-
+            alert("System data purged.");
+        }
+    </script>
 </body>
   </html>
   
