@@ -8,7 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
-        body { background: #f4f6f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
+        body { background: #f4f6f5; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
+        .nav-bar { background: #087f5b; padding: 12px; text-align: center; border-radius: 12px; margin-bottom: 16px; width: 100%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .nav-bar a { color: white; margin: 0 8px; text-decoration: none; font-size: 14px; font-weight: 600; }
+        .nav-bar a:hover { text-decoration: underline; }
         .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; }
         h1 { font-size: 24px; color: #1a1a1a; margin-bottom: 8px; }
         p { color: #666; font-size: 14px; margin-bottom: 24px; }
@@ -26,6 +29,13 @@
     </style>
 </head>
 <body>
+
+    <nav class="nav-bar">
+        <a href="../">Home</a>
+        <a href="../passenger/">Passenger</a>
+        <a href="../driver/">Driver</a>
+        <a href="../admin/">Admin</a>
+    </nav>
 
     <div class="card">
         <h1>Driver Portal</h1>
@@ -59,6 +69,8 @@
         const busId = 1;
 
         function toggleTracking() {
+            alert("Button clicked"); // Test pop-up to verify function execution
+
             const btn = document.getElementById('toggleBtn');
             const badge = document.getElementById('statusBadge');
 
@@ -146,5 +158,5 @@
         }
     </script>
 </body>
-                    </html>
-                
+</html>
+    
