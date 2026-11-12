@@ -154,9 +154,97 @@
                 default:
                     badge.innerText = "GPS Error: Unknown Error";
                     break;
+            }}
+        <script>
+    let watchId = null;
+
+    function startTracking() {
+      if (!navigator.geolocation) {
+        alert("GPS is not supported by this browser.");
+        return;
+      }
+
+      if (watchId !== null) return;
+
+      document.getElementById("status").textContent =
+        "Requesting GPS permission...";
+
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          updateLocation(position);
+
+          watchId = navigator.geolocation.watchPosition(
+            updateLocation,
+            showError,
+            {
+              enableHighAccuracy: true,
+              maximumAge: 3000,
+              timeout: 15000
             }
+          );
+
+          document.getElementById("status").textContent =
+            "GPS tracking active";
+
+          document.getElementById("status").className =
+            "status live";
+        },
+        showError,
+        {
+          enableHighAccuracy: true,
+          timeout: 15000
         }
+      );
+    }
+
+    function updateLocation(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const accuracy = position.coords.accuracy;
+
+      document.getElementById("latitude").textContent =
+        "Latitude: " + lat.toFixed(6);
+
+      document.getElementById("longitude").textContent =
+        "Longitude: " + lon.toFixed(6);
+
+      document.getElementById("accuracy").textContent =
+        "Accuracy: approximately " + Math.round(accuracy) + " metres";
+
+      document.getElementById("updated").textContent =
+        "Last update: " + new Date().toLocaleTimeString();
+    }
+
+    function showError(error) {
+      const messages = {
+        1: "Location permission denied.",
+        2: "GPS position unavailable.",
+        3: "GPS request timed out."
+      };
+
+      document.getElementById("status").textContent =
+        messages[error.code] || "GPS error";
+
+      document.getElementById("status").className = "status";
+    }
+
+    function stopTracking() {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+
+      document.getElementById("status").textContent =
+        "Trip ended";
+
+      document.getElementById("status").className = "status";
+    }
+  </script>
+    
+        
     </script>
+
+    
 </body>
 </html>
     
