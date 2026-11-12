@@ -5,141 +5,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GreenTrack - Admin</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f0f5f2; color: #18332b; margin: 0; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; }
-        .form-group input { width: 100%; padding: 8px; box-sizing: border-box; }
-        button { background: #102b24; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #1d4d41; }
-        .status { font-weight: bold; }
-        .status-online { color: green; }
-        .status-offline { color: red; }
-
-
         body {
-    font-family: Arial, sans-serif;
-    background: #f0f5f2;
-    color: #18332b;
-    margin: 0;
-    padding: 0;
-}
-
-.nav-bar {
-    background: #ffffff;
-    padding: 15px;
-    display: flex;
-    justify-content: space-around;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.nav-bar a {
-    text-decoration: none;
-    color: #102b24;
-    font-weight: 600;
-}
-
-.nav-bar a.active {
-    color: #1d4d41;
-    border-bottom: 2px solid #1d4d41;
-}
-
-.container {
-    padding: 20px;
-}
-
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button {
-    background: #102b24;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #1d4d41;
-}
-
-.status {
-    font-weight: bold;
-}
-
-.status-online {
-    color: green;
-}
-
-.status-offline {
-    color: red;
-                }
-                
+            font-family: Arial, sans-serif;
+            background: #f0f5f2;
+            color: #18332b;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-bar {
+            background: #ffffff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .nav-bar a {
+            text-decoration: none;
+            color: #102b24;
+            font-weight: 600;
+        }
+        .nav-bar a.active {
+            color: #1d4d41;
+            border-bottom: 2px solid #1d4d41;
+        }
+        .container {
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background: #102b24;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1d4d41;
+        }
+        .status {
+            font-weight: bold;
+        }
+        .status-online {
+            color: green;
+        }
+        .status-offline {
+            color: red;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Login Section -->
-    <div id="login-section" class="card">
-        <h2>Admin Login</h2>
-        <form id="login-form">
-            <div class="form-group">
-                <label for="admin-email">Email</label>
-                <input type="email" id="admin-email" required>
-            </div>
-            <div class="form-group">
-                <label for="admin-password">Password</label>
-                <input type="password" id="admin-password" required>
-            </div>
-            <button type="submit">Log In</button>
-        </form>
+    <div class="nav-bar">
+        <a href="../index.html">Home</a>
+        <a href="../passenger/index.html">Passenger</a>
+        <a href="../driver/index.html">Driver</a>
+        <a href="index.html" class="active">Admin</a>
     </div>
 
-    <!-- Admin Panel Section -->
-    <div id="admin-panel" class="card" style="display: none;">
-        <h2>Admin Panel</h2>
-        <p>Status: <span id="auth-status" class="status status-offline">Offline</span></p>
-        <button onclick="handleLogout()">Log Out</button>
-
-        <hr>
-
-        <h3>Manage System Data</h3>
-        <button id="adminActionBtn" onclick="executeAdminAction('reset-system-data')">Purge System Data</button>
-
-        <h3>Live Bus Tracking</h3>
-        <div id="bus-id">Bus ID: GT-001</div>
-        <div class="form-group">
-            <label>Latitude</label>
-            <input type="text" id="latitude" readonly>
+    <div class="container">
+        <!-- Login Section -->
+        <div id="login-section" class="card">
+            <h2>Admin Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="admin-email">Email</label>
+                    <input type="email" id="admin-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="admin-password">Password</label>
+                    <input type="password" id="admin-password" required>
+                </div>
+                <button type="submit">Log In</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label>Longitude</label>
-            <input type="text" id="longitude" readonly>
+
+        <!-- Admin Panel Section -->
+        <div id="admin-panel" class="card" style="display: none;">
+            <h2>Admin Panel</h2>
+            <p>Status: <span id="auth-status" class="status status-offline">Offline</span></p>
+            <button onclick="handleLogout()">Log Out</button>
+
+            <hr>
+
+            <h3>Manage System Data</h3>
+            <button id="adminActionBtn" onclick="executeAdminAction('reset-system-data')">Purge System Data</button>
+
+            <h3>Live Bus Tracking</h3>
+            <div id="bus-id">Bus ID: GT-001</div>
+            <div class="form-group">
+                <label>Latitude</label>
+                <input type="text" id="latitude" readonly>
+            </div>
+            <div class="form-group">
+                <label>Longitude</label>
+                <input type="text" id="longitude" readonly>
+            </div>
+            <button id="broadcast-override-btn" onclick="executeAdminAction('broadcast-override-btn')">Force Location Broadcast</button>
         </div>
-        <button id="broadcast-override-btn" onclick="executeAdminAction('broadcast-override-btn')">Force Location Broadcast</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"></script>
@@ -316,5 +299,5 @@ button:hover {
         }
     </script>
 </body>
-  </html>
-  
+                    </html>
+                    
