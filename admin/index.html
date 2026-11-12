@@ -312,6 +312,38 @@
 
       document.getElementById("status").className = "status";
     }
+
+    // 1. Check current session on page load
+async function checkAuth() {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    
+    // If on the Admin tab/view, verify the user is logged in
+    const currentTab = document.querySelector('.admin-section'); // Adjust selector based on your HTML structure
+    if (!session) {
+        console.warn("Unauthorized access attempt. Please log in.");
+        return false;
+    }
+    return true;
+}
+
+// 2. Protect Admin Button Actions
+const adminButton = document.getElementById('adminActionBtn'); // Replace with your actual admin button ID
+if (adminButton) {
+    adminButton.addEventListener('click', async (e) => {
+        const isAuthenticated = await checkAuth();
+        
+        if (!isAuthenticated) {
+            e.preventDefault();
+            alert("Access Denied: You must be logged in as an administrator to use this feature.");
+            // Optional: Redirect to a login modal or page
+            return;
+        }
+        
+        // Proceed with admin action if authenticated
+        console.log("Admin action authorized.");
+    });
+    }
+    
   </script>
 
 </body>
