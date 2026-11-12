@@ -3,301 +3,591 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GreenTrack - Admin</title>
+    <title>GreenTrack | Admin Portal</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f5f2;
-            color: #18332b;
+        :root {
+            --primary: #102b24;
+            --primary-hover: #1d4d41;
+            --accent: #16a34a;
+            --bg-body: #f3f7f5;
+            --bg-card: #ffffff;
+            --text-main: #18332b;
+            --text-muted: #5c756d;
+            --border-color: #d8e3de;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --shadow: 0 8px 24px rgba(16, 43, 36, 0.08);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        .nav-bar {
-            background: #ffffff;
-            padding: 15px;
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            min-height: 100vh;
             display: flex;
-            justify-content: space-around;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-direction: column;
         }
+
+        /* Consistent Navigation Bar matching Driver/Passenger portals */
+        .nav-bar {
+            background-color: var(--primary);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
         .nav-bar a {
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
-            color: #102b24;
             font-weight: 600;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
         }
+
+        .nav-bar a:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
         .nav-bar a.active {
-            color: #1d4d41;
-            border-bottom: 2px solid #1d4d41;
+            color: #ffffff;
+            background-color: var(--primary-hover);
+            box-shadow: inset 0 -2px 0 var(--accent);
         }
+
+        /* Main Container */
         .container {
-            padding: 20px;
+            width: 100%;
+            max-width: 460px;
+            margin: 36px auto;
+            padding: 0 16px;
+            flex: 1;
         }
+
         .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: var(--bg-card);
+            padding: 32px 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
         }
+
+        .card-header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 22px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .card-header p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Form Elements */
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
+
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
         }
+
         .form-group input {
             width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 11px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-main);
+            background-color: #fafcfb;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        button {
-            background: #102b24;
-            color: white;
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-hover);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(29, 77, 65, 0.12);
+        }
+
+        .form-group input[readonly] {
+            background-color: #eef3f0;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 12px 16px;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:active {
+            transform: scale(0.99);
+        }
+
+        .btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #e8efeb;
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #d8e4de;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: #ffffff;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background-color: var(--danger-hover);
+        }
+
+        /* Auth Links */
+        .auth-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+
+        .auth-links a {
+            color: var(--primary-hover);
+            text-decoration: none;
+            font-weight: 600;
             cursor: pointer;
         }
-        button:hover {
-            background: #1d4d41;
+
+        .auth-links a:hover {
+            text-decoration: underline;
         }
-        .status {
-            font-weight: bold;
+
+        /* Alerts */
+        .alert-box {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
         }
+
+        .alert-error {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Admin Dashboard Specifics */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
         .status-online {
-            color: green;
+            background-color: #dcfce7;
+            color: #15803d;
         }
+
         .status-offline {
-            color: red;
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .panel-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 22px 0 12px;
+        }
+
+        .coord-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .bus-tag {
+            display: inline-block;
+            background: #eef3f0;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
         }
     </style>
 </head>
 <body>
 
-    <div class="nav-bar">
+    <nav class="nav-bar">
         <a href="../index.html">Home</a>
         <a href="../passenger/index.html">Passenger</a>
         <a href="../driver/index.html">Driver</a>
         <a href="index.html" class="active">Admin</a>
-    </div>
+    </nav>
 
-    <div class="container">
-        <!-- Login Section -->
-        <div id="login-section" class="card">
-            <h2>Admin Login</h2>
+    <main class="container">
+        <div id="global-alert" class="alert-box" role="alert"></div>
+
+        <!-- Login View -->
+        <section id="login-section" class="card">
+            <div class="card-header">
+                <h2>Admin Portal</h2>
+                <p>Sign in with authorized administrator credentials</p>
+            </div>
             <form id="login-form">
                 <div class="form-group">
-                    <label for="admin-email">Email</label>
-                    <input type="email" id="admin-email" required>
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="admin@greentrack.com" autocomplete="email" required>
                 </div>
                 <div class="form-group">
-                    <label for="admin-password">Password</label>
-                    <input type="password" id="admin-password" required>
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
                 </div>
-                <button type="submit">Log In</button>
+                <button type="submit" id="login-btn" class="btn btn-primary">Sign In</button>
             </form>
-        </div>
-
-        <!-- Admin Panel Section -->
-        <div id="admin-panel" class="card" style="display: none;">
-            <h2>Admin Panel</h2>
-            <p>Status: <span id="auth-status" class="status status-offline">Offline</span></p>
-            <button onclick="handleLogout()">Log Out</button>
-
-            <hr>
-
-            <h3>Manage System Data</h3>
-            <button id="adminActionBtn" onclick="executeAdminAction('reset-system-data')">Purge System Data</button>
-
-            <h3>Live Bus Tracking</h3>
-            <div id="bus-id">Bus ID: GT-001</div>
-            <div class="form-group">
-                <label>Latitude</label>
-                <input type="text" id="latitude" readonly>
+            <div class="auth-links">
+                <a data-target="register-section">Create Account</a>
+                <a data-target="recovery-section">Forgot Password?</a>
             </div>
-            <div class="form-group">
-                <label>Longitude</label>
-                <input type="text" id="longitude" readonly>
-            </div>
-            <button id="broadcast-override-btn" onclick="executeAdminAction('broadcast-override-btn')">Force Location Broadcast</button>
-        </div>
-    </div>
+        </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"></script>
-    <script>
+        <!-- Registration View -->
+        <section id="register-section" class="card" style="display: none;">
+            <div class="card-header">
+                <h2>Register Admin Account</h2>
+                <p>New accounts require role approval in Supabase</p>
+            </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-email">Email Address</label>
+                    <input type="email" id="reg-email" placeholder="name@greentrack.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password (min 6 characters)</label>
+                    <input type="password" id="reg-password" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm-password">Confirm Password</label>
+                    <input type="password" id="reg-confirm-password" minlength="6" required>
+                </div>
+                <button type="submit" id="register-btn" class="btn btn-primary">Create Account</button>
+            </form>
+            <div class="auth-links">
+                <a data-target="login-section">Back to Sign In</a>
+            </div>
+        </section>
+
+        <!-- Password Recovery View -->
+        <section id="recovery-section" class="card" style="display: none;">
+            <div class="card-header">
+                <h2>Reset Password</h2>
+                <p>Receive a secure password reset link via email</p>
+            </div>
+            <form id="recovery-form">
+                <div class="form-group">
+                    <label for="recovery-email">Registered Email Address</label>
+                    <input type="email" id="recovery-email" placeholder="admin@greentrack.com" required>
+                </div>
+                <button type="submit" id="recovery-btn" class="btn btn-primary">Send Reset Link</button>
+            </form>
+            <div class="auth-links">
+                <a data-target="login-section">Back to Sign In</a>
+            </div>
+        </section>
+
+        <!-- Authenticated Admin Panel -->
+        <section id="admin-panel" class="card" style="display: none;">
+            <div class="panel-top">
+                <div>
+                    <h2 style="font-size: 19px; color: var(--primary);">Admin Dashboard</h2>
+                    <span id="auth-status" class="status-badge status-offline">Offline</span>
+                </div>
+                <button id="logout-btn" class="btn btn-secondary" style="width: auto; padding: 8px 14px;">Sign Out</button>
+            </div>
+
+            <div class="section-title">Live Fleet Override</div>
+            <div class="bus-tag">Active Vehicle: GT-001</div>
+            <div class="coord-grid">
+                <div class="form-group">
+                    <label for="latitude">Latitude</label>
+                    <input type="text" id="latitude" placeholder="--" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="longitude">Longitude</label>
+                    <input type="text" id="longitude" placeholder="--" readonly>
+                </div>
+            </div>
+            <button id="broadcast-override-btn" class="btn btn-primary">Force Location Broadcast</button>
+
+            <div class="section-title" style="margin-top: 28px; color: var(--danger);">Danger Zone</div>
+            <button id="reset-data-btn" class="btn btn-danger">Purge All Route Data</button>
+        </section>
+    </main>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
         const SUPABASE_URL = 'https://uywbfrkefjbukymgfpvb.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_QwNjqYNgr8yTWuZVt9bYyw_Y-aWvJ_J';
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const appState = {
+        const state = {
             session: null,
-            userRole: null
+            role: null
         };
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            await initializeAuth();
-        });
-
-        async function initializeAuth() {
-            try {
-                const { data: { session }, error } = await supabase.auth.getSession();
-                if (error) throw error;
-
-                appState.session = session;
-                if (session) {
-                    await fetchUserRole(session.user.id);
-                    updateAdminUI(true);
-                } else {
-                    updateAdminUI(false);
-                }
-            } catch (err) {
-                console.error("Auth initialization failed:", err.message);
-                updateAdminUI(false);
-            }
-
-            supabase.auth.onAuthStateChange(async (_event, session) => {
-                appState.session = session;
-                if (session) {
-                    await fetchUserRole(session.user.id);
-                    updateAdminUI(true);
-                } else {
-                    appState.userRole = null;
-                    updateAdminUI(false);
-                }
+        // UI Helpers
+        const views = ['login-section', 'register-section', 'recovery-section', 'admin-panel'];
+        
+        function switchView(targetId) {
+            clearAlert();
+            views.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = (id === targetId) ? 'block' : 'none';
             });
         }
 
+        function showAlert(message, type = 'error') {
+            const box = document.getElementById('global-alert');
+            box.textContent = message;
+            box.className = `alert-box ${type === 'error' ? 'alert-error' : 'alert-success'}`;
+            box.style.display = 'block';
+        }
+
+        function clearAlert() {
+            const box = document.getElementById('global-alert');
+            box.style.display = 'none';
+        }
+
+        function setButtonLoading(btnId, isLoading, defaultText) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            btn.disabled = isLoading;
+            btn.textContent = isLoading ? 'Processing...' : defaultText;
+        }
+
+        // Role-Based Access Control (RBAC)
         async function fetchUserRole(userId) {
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('role')
-                    .eq('id', userId)
-                    .single();
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', userId)
+                .single();
 
-                if (error) throw error;
-                appState.userRole = data?.role;
-            } catch (err) {
-                console.error("Error fetching user role:", err.message);
-                appState.userRole = 'user';
+            if (error || !data) return 'unauthorized';
+            return data.role;
+        }
+
+        async function enforceAdminAccess(session) {
+            state.session = session;
+
+            if (!session) {
+                state.role = null;
+                updateDashboardStatus(false);
+                switchView('login-section');
+                return false;
+            }
+
+            const role = await fetchUserRole(session.user.id);
+            state.role = role;
+
+            if (role === 'admin') {
+                updateDashboardStatus(true);
+                switchView('admin-panel');
+                return true;
+            } else {
+                // Immediately terminate unauthorized sessions
+                await supabase.auth.signOut();
+                state.session = null;
+                state.role = null;
+                updateDashboardStatus(false);
+                switchView('login-section');
+                showAlert('Access Denied: Your account does not have administrator privileges.', 'error');
+                return false;
             }
         }
 
-        function updateAdminUI(isLoggedIn) {
-            const loginSection = document.getElementById('login-section');
-            const adminPanel = document.getElementById('admin-panel');
-            const authStatus = document.getElementById('auth-status');
-
-            if (authStatus) {
-                authStatus.textContent = isLoggedIn ? "Online (Admin)" : "Offline";
-                authStatus.className = isLoggedIn ? "status status-online" : "status status-offline";
-            }
-
-            if (loginSection && adminPanel) {
-                if (isLoggedIn && appState.userRole === 'admin') {
-                    loginSection.style.display = 'none';
-                    adminPanel.style.display = 'block';
-                } else {
-                    loginSection.style.display = 'block';
-                    adminPanel.style.display = 'none';
-                }
-            }
+        function updateDashboardStatus(isAuthorized) {
+            const badge = document.getElementById('auth-status');
+            if (!badge) return;
+            badge.textContent = isAuthorized ? '● Online (Admin)' : '● Offline';
+            badge.className = `status-badge ${isAuthorized ? 'status-online' : 'status-offline'}`;
         }
+
+        // Event Listeners
+        document.querySelectorAll('.auth-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchView(link.getAttribute('data-target'));
+            });
+        });
 
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('admin-email').value;
-            const password = document.getElementById('admin-password').value;
+            clearAlert();
+            setButtonLoading('login-btn', true, 'Sign In');
+
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
 
             try {
-                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
-                alert("Login successful!");
+                await enforceAdminAccess(data.session);
             } catch (err) {
-                alert("Login failed: " + err.message);
+                showAlert(err.message || 'Authentication failed.', 'error');
+            } finally {
+                setButtonLoading('login-btn', false, 'Sign In');
             }
         });
 
-        async function handleLogout() {
-            try {
-                const { error } = await supabase.auth.signOut();
-                if (error) throw error;
-                window.location.reload();
-            } catch (err) {
-                console.error("Logout error:", err.message);
-            }
-        }
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearAlert();
 
-        async function verifyAuthorization() {
-            if (!appState.session) return false;
-            if (appState.userRole !== 'admin') {
-                console.warn("Permission denied: User is not an admin.");
-                return false;
-            }
-            return true;
-        }
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm-password').value;
 
-        async function executeAdminAction(actionId) {
-            const isAuthorized = await verifyAuthorization();
-            if (!isAuthorized) {
-                alert("Access Denied: You must be logged in as an administrator to use this feature.");
+            if (password !== confirm) {
+                showAlert('Passwords do not match.', 'error');
                 return;
             }
 
-            console.log(`Executing secure admin action: ${actionId}`);
+            setButtonLoading('register-btn', true, 'Create Account');
+
             try {
-                switch(actionId) {
-                    case 'broadcast-override-btn':
-                        await forceBroadcastCoordinates();
-                        break;
-                    case 'reset-system-data':
-                        await resetSystemData();
-                        break;
-                    default:
-                        alert("Action triggered successfully.");
+                const { data, error } = await supabase.auth.signUp({ email, password });
+                if (error) throw error;
+
+                if (data?.user) {
+                    await supabase.from('profiles').upsert({ id: data.user.id, role: 'pending' });
                 }
+
+                // Ensure unapproved users are signed out immediately
+                await supabase.auth.signOut();
+                switchView('login-section');
+                showAlert('Account created. Set your role to "admin" in the Supabase profiles table before signing in.', 'success');
             } catch (err) {
-                console.error("Action execution failed:", err.message);
-                alert("Failed to execute admin action.");
+                showAlert(err.message || 'Registration failed.', 'error');
+            } finally {
+                setButtonLoading('register-btn', false, 'Create Account');
             }
-        }
+        });
 
-        async function forceBroadcastCoordinates() {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(async (position) => {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-                    
-                    document.getElementById('latitude').value = latitude;
-                    document.getElementById('longitude').value = longitude;
+        document.getElementById('recovery-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearAlert();
+            setButtonLoading('recovery-btn', true, 'Send Reset Link');
 
-                    const { error } = await supabase
-                        .from('bus_locations')
-                        .upsert({ bus_id: 'GT-001', latitude, longitude, updated_at: new Date() });
+            const email = document.getElementById('recovery-email').value.trim();
 
-                    if (error) throw error;
-                    alert("Coordinates forcefully broadcasted to database.");
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + window.location.pathname
                 });
-            } else {
-                alert("Geolocation not supported.");
+                if (error) throw error;
+
+                switchView('login-section');
+                showAlert('Password reset instructions sent to your email.', 'success');
+            } catch (err) {
+                showAlert(err.message || 'Failed to send reset link.', 'error');
+            } finally {
+                setButtonLoading('recovery-btn', false, 'Send Reset Link');
             }
-        }
+        });
 
-        async function resetSystemData() {
-            const confirmReset = confirm("CRITICAL WARNING: This will reset all active routes. Proceed?");
-            if (!confirmReset) return;
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            switchView('login-section');
+            showAlert('Signed out successfully.', 'success');
+        });
 
-            const { error } = await supabase
-                .from('bus_locations')
-                .delete()
-                .neq('id', 0);
+        // Protected Admin Actions
+        document.getElementById('broadcast-override-btn').addEventListener('click', async () => {
+            clearAlert();
+            if (!(await enforceAdminAccess(state.session))) return;
 
-            if (error) throw error;
-            alert("System data purged.");
-        }
-    </script>
-</body>
-                    </html>
-                    
+            if (!('geolocation' in navigator)) {
+                showAlert('Geolocation is not supported by your browser.', 'error');
+                return;
+            }
+
+            setButtonLoading('broadcast-override-btn', true, 'Force Location Broadcast');
+
+            navigator.ge
