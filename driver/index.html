@@ -7,244 +7,151 @@
     <!-- Load Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
-        body { background: #f4f6f5; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
-        .nav-bar { background: #087f5b; padding: 12px; text-align: center; border-radius: 12px; margin-bottom: 16px; width: 100%; max-width: 400px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .nav-bar a { color: white; margin: 0 8px; text-decoration: none; font-size: 14px; font-weight: 600; }
-        .nav-bar a:hover { text-decoration: underline; }
-        .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; }
-        h1 { font-size: 24px; color: #1a1a1a; margin-bottom: 8px; }
-        p { color: #666; font-size: 14px; margin-bottom: 24px; }
-        .status-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; margin-bottom: 20px; background: #e2e8f0; color: #475569; }
-        .status-badge.active { background: #dcfce7; color: #166534; }
-        .status-badge.error { background: #fee2e2; color: #991b1b; }
-        button { background: #087f5b; color: white; border: none; padding: 14px 24px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; }
-        button:hover { background: #065f46; }
-        button.active { background: #dc2626; }
-        button.active:hover { background: #b91c1c; }
-        .metrics { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; }
-        .metric-box { background: #f8fafc; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; }
-        .metric-label { font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 700; }
-        .metric-value { font-size: 15px; color: #0f172a; font-weight: 600; margin-top: 2px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f3f7f5; color: #18332b; min-height: 100vh; display: flex; flex-direction: column; }
+        .nav-bar { background-color: #102b24; padding: 14px 20px; display: flex; justify-content: center; gap: 24px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12); position: sticky; top: 0; z-index: 100; }
+        .nav-bar a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 12px; border-radius: 6px; }
+        .nav-bar a:hover { color: #ffffff; background-color: rgba(255, 255, 255, 0.1); }
+        .nav-bar a.active { color: #ffffff; background-color: #1d4d41; }
+        .container { flex: 1; max-width: 460px; margin: 36px auto; padding: 0 16px; width: 100%; }
+        .card { background-color: #ffffff; padding: 32px 28px; border-radius: 12px; box-shadow: 0 8px 24px rgba(16, 43, 36, 0.08); border: 1px solid #d8e3de; text-align: center; }
+        h1 { font-size: 22px; color: #102b24; font-weight: 700; margin-bottom: 8px; }
+        p { color: #5c756d; font-size: 13px; margin-bottom: 24px; }
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 24px; }
+        .status-offline { background-color: #fee2e2; color: #b91c1c; }
+        .status-active { background-color: #dcfce7; color: #15803d; }
+        button { width: 100%; background-color: #102b24; color: #ffffff; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+        button:hover { background-color: #1d4d41; }
+        button.active { background-color: #dc2626; }
+        button.active:hover { background-color: #b91c1c; }
+        .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; text-align: left; }
+        .metric-box { background: #fafcfb; border: 1px solid #d8e3de; border-radius: 8px; padding: 12px; }
+        .metric-label { font-size: 11px; color: #5c756d; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+        .metric-value { font-size: 16px; color: #102b24; font-weight: 600; font-family: monospace; }
+        .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; display: none; }
+        .alert-error { background-color: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
     </style>
 </head>
 <body>
 
     <nav class="nav-bar">
-        <a href="../">Home</a>
-        <a href="../passenger/">Passenger</a>
-        <a href="../driver/">Driver</a>
-        <a href="../admin/">Admin</a>
+        <a href="../index.html">Home</a>
+        <a href="../passenger/index.html">Passenger</a>
+        <a href="index.html" class="active">Driver</a>
+        <a href="../admin/index.html">Admin</a>
     </nav>
 
-    <div class="card">
-        <h1>Driver Portal</h1>
-        <p>Broadcast your real-time vehicle location</p>
+    <main class="container">
+        <div id="driver-alert" class="alert alert-error"></div>
         
-        <div>
-            <span id="statusBadge" class="status-badge">Status: Offline</span>
-        </div>
-
-        <button id="toggleBtn" onclick="toggleTracking()">Start Broadcasting</button>
-
-        <div class="metrics">
-            <div class="metric-box">
-                <div class="metric-label">Latitude</div>
-                <div id="latVal" class="metric-value">--</div>
+        <div class="card">
+            <h1>Driver Portal</h1>
+            <p>Broadcast your real-time vehicle location</p>
+            
+            <div>
+                <span id="statusBadge" class="status-badge status-offline">Status: Offline</span>
             </div>
-            <div class="metric-box">
-                <div class="metric-label">Longitude</div>
-                <div id="lngVal" class="metric-value">--</div>
+
+            <button id="toggleBtn" onclick="toggleTracking()">Start Broadcasting</button>
+
+            <div class="metrics">
+                <div class="metric-box">
+                    <div class="metric-label">Latitude</div>
+                    <div id="latVal" class="metric-value">--</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Longitude</div>
+                    <div id="lngVal" class="metric-value">--</div>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        const SUPABASE_URL = "https://uywbfrkefjbukymgf.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_QWnJqYNgR8yTwuZvT9bYwY-aWvJ_J";
-        
+        const SUPABASE_URL = 'https://uywbfrkefjbukymgfpvb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_QwNjqYNgr8yTWuZVt9bYyw_Y-aWvJ_J';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let watchId = null;
-        const busId = 1;
+        const BUS_ID = 'GT-001';
 
-        function toggleTracking() {
-            alert("Button clicked"); // Test pop-up to verify function execution
+        function showErr(msg) {
+            const el = document.getElementById('driver-alert');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
 
+        function clearErr() {
+            document.getElementById('driver-alert').style.display = 'none';
+        }
+
+        async function toggleTracking() {
+            clearErr();
             const btn = document.getElementById('toggleBtn');
             const badge = document.getElementById('statusBadge');
 
             if (watchId === null) {
-                if (!navigator.geolocation) {
-                    alert("Geolocation is not supported by your browser.");
+                if (!("geolocation" in navigator)) {
+                    showErr("Geolocation is not supported by your browser.");
                     return;
                 }
 
-                badge.className = "status-badge";
-                badge.innerText = "Status: Acquiring GPS...";
-                
-                watchId = navigator.geolocation.watchPosition(updatePosition, handleGeoError, {
+                badge.className = "status-badge status-active";
+                badge.textContent = "Status: Broadcasting Live";
+                btn.textContent = "Stop Broadcasting";
+                btn.className = "active";
+
+                const geoOptions = {
                     enableHighAccuracy: true,
-                    maximumAge: 0,
-                    timeout: 10000
-                });
+                    timeout: 10000,
+                    maximumAge: 0
+                };
 
-                btn.innerText = "Stop Broadcasting";
-                btn.classList.add('active');
+                watchId = navigator.geolocation.watchPosition(updatePosition, handleGeoError, geoOptions);
             } else {
-                navigator.geolocation.clearWatch(watchId);
-                watchId = null;
+                if (watchId !== null) {
+                    navigator.geolocation.clearWatch(watchId);
+                    watchId = null;
+                }
 
-                badge.className = "status-badge";
-                badge.innerText = "Status: Offline";
-                btn.innerText = "Start Broadcasting";
-                btn.classList.remove('active');
-
-                document.getElementById('latVal').innerText = "--";
-                document.getElementById('lngVal').innerText = "--";
+                badge.className = "status-badge status-offline";
+                badge.textContent = "Status: Offline";
+                btn.textContent = "Start Broadcasting";
+                btn.className = "";
+                document.getElementById('latVal').textContent = "--";
+                document.getElementById('lngVal').textContent = "--";
             }
         }
 
         async function updatePosition(position) {
-            const badge = document.getElementById('statusBadge');
-            badge.className = "status-badge active";
-            badge.innerText = "Status: Broadcasting Live";
-
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-            const speed = position.coords.speed ? position.coords.speed * 3.6 : 0;
-            const heading = position.coords.heading || 0;
 
-            document.getElementById('latVal').innerText = lat.toFixed(5);
-            document.getElementById('lngVal').innerText = lng.toFixed(5);
+            document.getElementById('latVal').textContent = lat.toFixed(6);
+            document.getElementById('lngVal').textContent = lng.toFixed(6);
 
-            const { error } = await supabase
-                .from('bus_locations')
-                .upsert([{
-                    bus_id: busId,
-                    latitude: lat,
-                    longitude: lng,
-                    speed: speed,
-                    heading: heading,
-                    updated_at: new Date().toISOString()
-                }], { onConflict: 'bus_id' });
+            try {
+                const { error } = await supabase
+                    .from('bus_locations')
+                    .upsert({
+                        bus_id: BUS_ID,
+                        latitude: lat,
+                        longitude: lng,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'bus_id' });
 
-            if (error) {
-                console.error("Supabase sync error:", error.message);
-                badge.className = "status-badge error";
-                badge.innerText = "Status: Sync Error";
+                if (error) throw error;
+            } catch (err) {
+                console.error("Supabase update error:", err.message);
+                showErr("Sync error: " + err.message);
             }
         }
 
         function handleGeoError(error) {
-            console.error(`Geolocation error (${error.code}): ${error.message}`);
-            const badge = document.getElementById('statusBadge');
-            badge.className = "status-badge error";
-            
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    badge.innerText = "GPS Error: Permission Denied";
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    badge.innerText = "GPS Error: Position Unavailable";
-                    break;
-                case error.TIMEOUT:
-                    badge.innerText = "GPS Error: Request Timeout";
-                    break;
-                default:
-                    badge.innerText = "GPS Error: Unknown Error";
-                    break;
-            }}
-        <script>
-    let watchId = null;
-
-    function startTracking() {
-      if (!navigator.geolocation) {
-        alert("GPS is not supported by this browser.");
-        return;
-      }
-
-      if (watchId !== null) return;
-
-      document.getElementById("status").textContent =
-        "Requesting GPS permission...";
-
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          updateLocation(position);
-
-          watchId = navigator.geolocation.watchPosition(
-            updateLocation,
-            showError,
-            {
-              enableHighAccuracy: true,
-              maximumAge: 3000,
-              timeout: 15000
-            }
-          );
-
-          document.getElementById("status").textContent =
-            "GPS tracking active";
-
-          document.getElementById("status").className =
-            "status live";
-        },
-        showError,
-        {
-          enableHighAccuracy: true,
-          timeout: 15000
+            console.warn(`Geolocation error (${error.code}): ${error.message}`);
+            showErr("GPS error: " + error.message);
         }
-      );
-    }
-
-    function updateLocation(position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      const accuracy = position.coords.accuracy;
-
-      document.getElementById("latitude").textContent =
-        "Latitude: " + lat.toFixed(6);
-
-      document.getElementById("longitude").textContent =
-        "Longitude: " + lon.toFixed(6);
-
-      document.getElementById("accuracy").textContent =
-        "Accuracy: approximately " + Math.round(accuracy) + " metres";
-
-      document.getElementById("updated").textContent =
-        "Last update: " + new Date().toLocaleTimeString();
-    }
-
-    function showError(error) {
-      const messages = {
-        1: "Location permission denied.",
-        2: "GPS position unavailable.",
-        3: "GPS request timed out."
-      };
-
-      document.getElementById("status").textContent =
-        messages[error.code] || "GPS error";
-
-      document.getElementById("status").className = "status";
-    }
-
-    function stopTracking() {
-      if (watchId !== null) {
-        navigator.geolocation.clearWatch(watchId);
-        watchId = null;
-      }
-
-      document.getElementById("status").textContent =
-        "Trip ended";
-
-      document.getElementById("status").className = "status";
-    }
-  </script>
-    
-        
     </script>
-
-    
 </body>
-</html>
+    </html>
     
