@@ -1,157 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GreenTrack | Driver Portal</title>
-    <!-- Load Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #f3f7f5; color: #18332b; min-height: 100vh; display: flex; flex-direction: column; }
-        .nav-bar { background-color: #102b24; padding: 14px 20px; display: flex; justify-content: center; gap: 24px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12); position: sticky; top: 0; z-index: 100; }
-        .nav-bar a { color: rgba(255, 255, 255, 0.8); text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 12px; border-radius: 6px; }
-        .nav-bar a:hover { color: #ffffff; background-color: rgba(255, 255, 255, 0.1); }
-        .nav-bar a.active { color: #ffffff; background-color: #1d4d41; }
-        .container { flex: 1; max-width: 460px; margin: 36px auto; padding: 0 16px; width: 100%; }
-        .card { background-color: #ffffff; padding: 32px 28px; border-radius: 12px; box-shadow: 0 8px 24px rgba(16, 43, 36, 0.08); border: 1px solid #d8e3de; text-align: center; }
-        h1 { font-size: 22px; color: #102b24; font-weight: 700; margin-bottom: 8px; }
-        p { color: #5c756d; font-size: 13px; margin-bottom: 24px; }
-        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; border-radius: 999px; font-size: 13px; font-weight: 700; margin-bottom: 24px; }
-        .status-offline { background-color: #fee2e2; color: #b91c1c; }
-        .status-active { background-color: #dcfce7; color: #15803d; }
-        button { width: 100%; background-color: #102b24; color: #ffffff; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
-        button:hover { background-color: #1d4d41; }
-        button.active { background-color: #dc2626; }
-        button.active:hover { background-color: #b91c1c; }
-        .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; text-align: left; }
-        .metric-box { background: #fafcfb; border: 1px solid #d8e3de; border-radius: 8px; padding: 12px; }
-        .metric-label { font-size: 11px; color: #5c756d; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
-        .metric-value { font-size: 16px; color: #102b24; font-weight: 600; font-family: monospace; }
-        .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; display: none; }
-        .alert-error { background-color: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GreenTrack | Driver Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --primary: #087f5b;
+      --primary-hover: #066347;
+      --accent: #16a34a;
+      --bg-body: #f4f7f5;
+      --bg-card: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #52796f;
+      --border-color: #dce6e2;
+      --danger: #dc2626;
+      --danger-hover: #b91c1c;
+      --shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 32px;
+    }
+
+    /* Navigation Bar matching Home/Passenger/Admin */
+    .nav-bar {
+      background-color: #ffffff;
+      padding: 12px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-bar a {
+      color: #347751;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-bar a:hover {
+      background-color: #f0fdf4;
+    }
+
+    .nav-bar a.active {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    /* Main Container */
+    .container {
+      width: 92%;
+      max-width: 480px;
+      margin: 24px auto;
+      padding: 0;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .header-group {
+      margin-bottom: 24px;
+    }
+
+    .header-group h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .header-group p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .bus-tag {
+      display: inline-block;
+      background: #e6f4f1;
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .status-offline {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-active {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 13px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:active {
+      transform: scale(0.99);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: #ffffff;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--danger-hover);
+    }
+
+    /* Metrics Grid */
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .metric-box {
+      background: #f8faf9;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: left;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .metric-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .last-sync {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Alerts */
+    .alert {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      display: none;
+      line-height: 1.4;
+      text-align: left;
+      background-color: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+  </style>
 </head>
 <body>
 
-    <nav class="nav-bar">
-        <a href="../index.html">Home</a>
-        <a href="../passenger/index.html">Passenger</a>
-        <a href="index.html" class="active">Driver</a>
-        <a href="../admin/index.html">Admin</a>
-    </nav>
+  <!-- Top Navigation -->
+  <nav class="nav-bar">
+    <a href="../index.html">Home</a>
+    <a href="../passenger/index.html">Passenger</a>
+    <a href="index.html" class="active">Driver</a>
+    <a href="../admin/index.html">Admin</a>
+  </nav>
 
-    <main class="container">
-        <div id="driver-alert" class="alert alert-error"></div>
-        
-        <div class="card">
-            <h1>Driver Portal</h1>
-            <p>Broadcast your real-time vehicle location</p>
-            
-            <div>
-                <span id="statusBadge" class="status-badge status-offline">Status: Offline</span>
-            </div>
+  <main class="container">
+    <div id="driver-alert" class="alert" role="alert"></div>
 
-            <button id="toggleBtn" onclick="toggleTracking()">Start Broadcasting</button>
+    <div class="card">
+      <div class="header-group">
+        <span class="bus-tag">UNIT: BUS_01</span>
+        <h1>Driver Portal</h1>
+        <p>Broadcast your real-time vehicle GPS coordinates</p>
+      </div>
 
-            <div class="metrics">
-                <div class="metric-box">
-                    <div class="metric-label">Latitude</div>
-                    <div id="latVal" class="metric-value">--</div>
-                </div>
-                <div class="metric-box">
-                    <div class="metric-label">Longitude</div>
-                    <div id="lngVal" class="metric-value">--</div>
-                </div>
-            </div>
+      <div id="statusBadge" class="status-badge status-offline">Status: Offline</div>
+
+      <button id="toggleBtn" class="btn btn-primary" onclick="toggleTracking()">Start Broadcasting</button>
+
+      <div class="metrics">
+        <div class="metric-box">
+          <div class="metric-label">Latitude</div>
+          <div id="latVal" class="metric-value">--</div>
         </div>
-    </main>
+        <div class="metric-box">
+          <div class="metric-label">Longitude</div>
+          <div id="lngVal" class="metric-value">--</div>
+        </div>
+      </div>
 
-    <script>
-        const SUPABASE_URL = 'https://uywbfrkefjbukymgfpvb.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_QwNjqYNgr8yTWuZVt9bYyw_Y-aWvJ_J';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      <div id="lastSync" class="last-sync">Ready to broadcast</div>
+    </div>
+  </main>
 
-        let watchId = null;
-        const BUS_ID = 'GT-001';
+  <script>
+    const SUPABASE_URL = 'https://upehvfnfjmhyogfpadnk.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_bAFbJ5p7MyT0eZ0tMrY25w_aN5c_7_2';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function showErr(msg) {
-            const el = document.getElementById('driver-alert');
-            el.textContent = msg;
-            el.style.display = 'block';
+    let watchId = null;
+    const BUS_ID = 'BUS_01';
+
+    function showAlert(msg) {
+      const el = document.getElementById('driver-alert');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function clearAlert() {
+      const el = document.getElementById('driver-alert');
+      el.style.display = 'none';
+    }
+
+    function toggleTracking() {
+      clearAlert();
+      const btn = document.getElementById('toggleBtn');
+      const badge = document.getElementById('statusBadge');
+
+      if (watchId === null) {
+        if (!('geolocation' in navigator)) {
+          showAlert('Geolocation is not supported by your browser.');
+          return;
         }
 
-        function clearErr() {
-            document.getElementById('driver-alert').style.display = 'none';
-        }
+        badge.className = 'status-badge status-active';
+        badge.textContent = 'Status: Broadcasting Live';
+        btn.className = 'btn btn-danger';
+        btn.textContent = 'Stop Broadcasting';
+        document.getElementById('lastSync').textContent = 'Acquiring GPS lock...';
 
-        async function toggleTracking() {
-            clearErr();
-            const btn = document.getElementById('toggleBtn');
-            const badge = document.getElementById('statusBadge');
+        const geoOptions = {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        };
 
-            if (watchId === null) {
-                if (!("geolocation" in navigator)) {
-                    showErr("Geolocation is not supported by your browser.");
-                    return;
-                }
+        watchId = navigator.geolocation.watchPosition(
+          updatePosition,
+          handleError,
+          geoOptions
+        );
+      } else {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
 
-                badge.className = "status-badge status-active";
-                badge.textContent = "Status: Broadcasting Live";
-                btn.textContent = "Stop Broadcasting";
-                btn.className = "active";
+        badge.className = 'status-badge status-offline';
+        badge.textContent = 'Status: Offline';
+        btn.className = 'btn btn-primary';
+        btn.textContent = 'Start Broadcasting';
+        document.getElementById('latVal').textContent = '--';
+        document.getElementById('lngVal').textContent = '--';
+        document.getElementById('lastSync').textContent = 'Broadcast stopped';
+      }
+    }
 
-                const geoOptions = {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                };
+    async function updatePosition(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
 
-                watchId = navigator.geolocation.watchPosition(updatePosition, handleGeoError, geoOptions);
-            } else {
-                if (watchId !== null) {
-                    navigator.geolocation.clearWatch(watchId);
-                    watchId = null;
-                }
+      document.getElementById('latVal').textContent = lat.toFixed(6);
+      document.getElementById('lngVal').textContent = lng.toFixed(6);
 
-                badge.className = "status-badge status-offline";
-                badge.textContent = "Status: Offline";
-                btn.textContent = "Start Broadcasting";
-                btn.className = "";
-                document.getElementById('latVal').textContent = "--";
-                document.getElementById('lngVal').textContent = "--";
-            }
-        }
+      try {
+        const { error } = await supabaseClient
+          .from('bus_locations')
+          .upsert({
+            bus_id: BUS_ID,
+            latitude: lat,
+            longitude: lng,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'bus_id' });
 
-        async function updatePosition(position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
+        if (error) throw error;
 
-            document.getElementById('latVal').textContent = lat.toFixed(6);
-            document.getElementById('lngVal').textContent = lng.toFixed(6);
+        clearAlert();
+        const now = new Date().toLocaleTimeString();
+        document.getElementById('lastSync').textContent = `Last synced: ${now}`;
+      } catch (err) {
+        console.error('Supabase update error:', err.message);
+        showAlert('Sync error: ' + err.message);
+      }
+    }
 
-            try {
-                const { error } = await supabase
-                    .from('bus_locations')
-                    .upsert({
-                        bus_id: BUS_ID,
-                        latitude: lat,
-                        longitude: lng,
-                        updated_at: new Date().toISOString()
-                    }, { onConflict: 'bus_id' });
-
-                if (error) throw error;
-            } catch (err) {
-                console.error("Supabase update error:", err.message);
-                showErr("Sync error: " + err.message);
-            }
-        }
-
-        function handleGeoError(error) {
-            console.warn(`Geolocation error (${error.code}): ${error.message}`);
-            showErr("GPS error: " + error.message);
-        }
-    </script>
+    function handleError(err) {
+      console.warn('Geolocation warning:', err.message);
+      showAlert('GPS Error: ' + err.message);
+    }
+  </script>
 </body>
     </html>
     
